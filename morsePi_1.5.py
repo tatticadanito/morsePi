@@ -62,7 +62,6 @@ def wordSpace():			#Timing between each word
 	elementSpace()
 
 inputString = input("String to convert: ")	#Input && check if its valid
-#if not inputString.replace(" ","").isalnum():
 inputString = inputString.upper()	
 for c in inputString:
 	if c not in morseChar:
