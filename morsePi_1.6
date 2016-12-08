@@ -1,0 +1,99 @@
+import RPi.GPIO as GPIO
+import time
+#import sys
+import subprocess
+
+MORSE = {
+		' ': ' ',
+        "'": '.----.',
+        '(': '-.--.-',
+        ')': '-.--.-',
+        ',': '--..--',
+        '-': '-....-',
+        '.': '.-.-.-',
+        '/': '-..-.',
+        '0': '-----',
+        '1': '.----',
+        '2': '..---',
+        '3': '...--',
+        '4': '....-',
+        '5': '.....',
+        '6': '-....',
+        '7': '--...',
+        '8': '---..',
+        '9': '----.',
+        ':': '---...',
+        ';': '-.-.-.',
+        '?': '..--..',
+        'A': '.-',
+        'B': '-...',
+        'C': '-.-.',
+        'D': '-..',
+        'E': '.',
+        'F': '..-.',
+        'G': '--.',
+        'H': '....',
+        'I': '..',
+        'J': '.---',
+        'K': '-.-',
+        'L': '.-..',
+        'M': '--',
+        'N': '-.',
+        'O': '---',
+        'P': '.--.',
+        'Q': '--.-',
+        'R': '.-.',
+        'S': '...',
+        'T': '-',
+        'U': '..-',
+        'V': '...-',
+        'W': '.--',
+        'X': '-..-',
+        'Y': '-.--',
+        'Z': '--..',
+        '_': '..--.-'}
+
+nPin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(nPin, GPIO.OUT)
+#GPIO.cleanup()
+
+def punto():
+	GPIO.output(nPin, 1)
+	time.sleep(0.2)
+	subprocess.call(['play', '-n', 'synth', '0.2', 'sin', '1000'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+	GPIO.output(nPin, 0)
+	time.sleep(0.2)
+
+def meno():
+	GPIO.output(nPin, 1)
+	time.sleep(0.5)
+	subprocess.call(['play', '-n', 'synth', '0.5', 'sin', '1000'], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+	GPIO.output(nPin, 0)
+	time.sleep(0.2)
+
+continua = 'y'
+while(continua == 'y'):
+	valido = True
+	frase = input('Inserire la stringa da convertire: ')
+	frase = frase.upper()
+	for c in frase:
+		if c not in MORSE:
+			#sys.exit("Input non Valido !")
+			print('ERRORE! Input non valido!\n')
+			valido = False
+			break
+	if valido:
+		print("\n\t\tASCII\t|\tMORSE")
+		for lettera in frase:
+			print("Carattere:\t", lettera, "\t|\t", MORSE[lettera])
+			for simbolo in MORSE[lettera]:
+				if simbolo == '-':
+					meno()
+				elif simbolo == '.':
+					punto()
+				else:
+					time.sleep(0.5)
+			time.sleep(0.5)
+	continua = input("Vuoi continuare ? y/n: ")
